@@ -19,4 +19,10 @@ class User extends Model {
             tableName: 'users',
         })
     }
+    static associate(models) {
+        this.belongsTo(models.Role, { foreignKey: 'role_id', as: 'role' }),
+        this.hasMany(models.Post, { foreignKey: 'user_id', as: 'posts'})
+    }
 }
+
+module.exports = User

@@ -1,23 +1,24 @@
 const { Model, DataTypes } = require('sequelize');
 
-class Role extends Model {
+
+class Post extends Model {
     static init(sequelize) {
         super.init({
-            role: {
-                type: DataTypes.ENUM('admin', 'moderador', 'user'),
+            post: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
         }, {
             sequelize,
+            modelName: 'Post',
+            tableName: 'posts',
             timestamps: true,
             underscored: true,
-            modelName: 'Role',
-            tableName: 'roles',
         })
     }
     static associate(models) {
-        this.hasMany(models.User, { foreignKey: 'role_id', as: 'users' });
+        this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user'})
     }
 }
 
-module.exports = Role
+module.exports = Post
