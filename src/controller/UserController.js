@@ -1,20 +1,42 @@
 const User = require('../models/User');
+const bcrypty = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+
 
 module.exports = {
-    async NewUser(req, res) {
-        try {
-            const { name, password, role_id } = req.body
+    async NewUserComum(req, res) {
+    try {
+        const { name, password } = req.body;
 
-            const NewUser = await User.create({ name, password, role_id });
+        const hash = await bcrypty.hash(password, 10);
 
+        const CreatedUser = await User.create({ name, password: hash, role_id: 1 });
 
-            return res.status(201).json({ message: 'Usuario criado com sucesso', NewUser})
+        return res.status(201).json({ message: 'Usuário criado com sucesso', CreatedUser });
 
-        } catch (error) {
-            return res.status(500).json({ message: 'Erro ao tentar criar usuario', error})
-        }
-    },
+    } catch (error) {
+        return res.status(500).json({ message: 'Erro ao tentar criar usuário', error });
+    }
+ },
    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     async GetAllUsers(req, res) {
         try {
