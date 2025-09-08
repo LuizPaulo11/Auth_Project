@@ -10,17 +10,10 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
       },
-      role_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'roles',
-          key: 'id'
-        },
-        allowNull: false,
-      },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       password: {
         type: Sequelize.STRING,

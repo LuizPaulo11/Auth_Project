@@ -16,6 +16,8 @@ module.exports = {
           model: 'permissions',
           key: 'id',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         allowNull: false,
       },
       roles_id: {

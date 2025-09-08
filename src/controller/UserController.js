@@ -3,39 +3,84 @@ const bcrypty = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
-
 module.exports = {
     async NewUserComum(req, res) {
-    try {
-        const { name, password } = req.body;
+        try {
+            const { name, password } = req.body;
 
-        const hash = await bcrypty.hash(password, 10);
+            if ( !name || !password ) {
+                return res.status(400).json({ message: "Name ou password não informados" });
+            }
 
-        const CreatedUser = await User.create({ name, password: hash, role_id: 1 });
+            const hash = await bcrypty.hash(password, 10);
+            const createdUser = await User.create({ name, password: hash, role_id: 1 });
 
-        return res.status(201).json({ message: 'Usuário criado com sucesso', CreatedUser });
+            const userResponse = createdUser.toJSON();
+            delete userResponse.password;
 
-    } catch (error) {
-        return res.status(500).json({ message: 'Erro ao tentar criar usuário', error });
-    }
- },
-   
+            const token = jwt.sign(
+                { 
+                  UserId: createdUser.id,
+                  role: createdUser.role
+                },
+                process.env.SECRET,
+                { expiresIn: '1d' },
+            );
+
+            return res.status(201).json({ 
+                message: "Usuario criado com sucesso",
+                userResponse,
+                token
+            });
+
+            } catch (error) {
+                console.error(error);
+                return res.status(500).json({ message: "Erro interno no servidor", error});
+            }
+        },
 
 
+    async Login(req, res) {
+        try {
+            const { name, password } = req.body
 
+            if ( !name || !password ) {
+                return res.status(400).json({ message: "Name ou password não informados" });
+            }
 
+            const usuario = await User.findOne({ where: { name }});
 
+            if( !usuario ){
+                res.status(401).json({ message: "Credenciais invalidas", error});
+            }
 
+            const math = bcrypty.compare(password, usuario.password);
 
+            if ( !math ){
+                res.status(401).json({ message: "Credenciais invalidas", error});
+            }
 
+            const user = usuario.toJSON();
+            delete user.password;
 
+            const token = jwt.sign(
+                { 
+                  UserId: usuario.id,
+                  role: usuario.role
+                },
+                process.env.SECRET,
+                { expiresIn: '1d'},
+            )
 
-
-
-
-
-
-
+            res.json({
+                message: "Login realizado com sucesso",
+                user: user,
+                token,
+            })
+        } catch (error) {
+            return res.status(500).json({ message: "Erro interno no servidor", error})
+        }
+    },
 
 
     async GetAllUsers(req, res) {

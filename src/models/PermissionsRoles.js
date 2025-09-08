@@ -6,6 +6,7 @@ class PermissionsRoles extends Model {
             permissions_id: DataTypes.INTEGER,
             roles_id: DataTypes.INTEGER,
         },{
+            sequelize,
             timestamps: true,
             underscored: true,
             modelName: 'PermissionsRoles',

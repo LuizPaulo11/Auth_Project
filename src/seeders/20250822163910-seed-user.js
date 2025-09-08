@@ -9,7 +9,6 @@ module.exports = {
       users.push({
         name: faker.person.fullName(),
         password: faker.internet.password(),
-        role_id: faker.number.int({ min: 1, max: 3 }),
         created_at: new Date(),
         updated_at: new Date(),
       });
