@@ -8,6 +8,7 @@ class Post extends Model {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            user_id: DataTypes.INTEGER,
         }, {
             sequelize,
             modelName: 'Post',

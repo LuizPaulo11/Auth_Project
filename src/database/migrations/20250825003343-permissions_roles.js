@@ -3,14 +3,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.createTable('permissions_roles', { 
+    return queryInterface.createTable('permissions_roles', {
       id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         autoIncrement: true,
+        primaryKey: true,
         allowNull: false,
       },
-      permissions_id: {
+      permission_id: {
         type: Sequelize.INTEGER,
         references: {
           model: 'permissions',
@@ -20,12 +20,14 @@ module.exports = {
         onUpdate: 'CASCADE',
         allowNull: false,
       },
-      roles_id: {
+      role_id: {
         type: Sequelize.INTEGER,
         references: {
           model: 'roles',
           key: 'id',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         allowNull: false,
       },
       created_at: {
@@ -36,7 +38,7 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-     });
+    });
   },
 
   async down (queryInterface, Sequelize) {
