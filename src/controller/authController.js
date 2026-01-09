@@ -1,27 +1,55 @@
 const authService = require('../service/authService');
-const UserRoles = require('../models/UserRoles');
+const UserRole = require('../models/UserRole');
 
 module.exports = {
   async register(req, res) {
     try {
       const { name, password } = req.body;
 
-      const { newUser, token } = await authService.register(name, password);
-
-      const userRole = await UserRoles.findOne({ where: { user_id: newUser.id } });
+      const { newUser } = await authService.register(name, password);
 
       return res.status(201).json({
         message: "Usuário criado com sucesso",
-        user: newUser,
-        role: userRole ? userRole.role_id : null,
-        token
+        user: {
+          id: newUser.id,
+          name: newUser.name,
+          createdAt: newUser.createdAt
+        },
       });
 
     } catch (error) {
-      if (error.message === "Credenciais inválidas" || error.message === "Não foi possível criar o usuário") {
-        return res.status(400).json({ message: error.message });
+      if (error.message === "CREDENCIAIS_INVALIDAS") {
+        return res.status(400).json({ message: "Crendenciais inválidas" });
+      }
+      if (error.message === "USUARIO_JA_EXISTE") {
+        return res.status(409).json({ message: "Usuario já existe" });
       }
       return res.status(500).json({ message: "Erro interno no servidor" });
+    }
+  },
+
+  async login(req, res) {
+    try {
+      const { name, password } = req.body;
+
+      const user = await authService.login(name, password);
+
+      return res.status(200).json({
+        message: "Logado com sucesso!",
+        data: user,
+      });
+
+    } catch (error) {
+      if (error.message === "CREDENCIAIS_INVALIDAS") {
+        return res.status(400).json({ message: "Credenciais inválidas" })
+      }
+      if (error.message === "USUARIO_NAO_ENCONTRADO") {
+        return res.status(404).json({ message: "Usuario não encontrado" })
+      }
+      if (error.message === "NAME_OU_SENHA_INVALIDO") {
+        return res.status(401).json({ message: "Name ou senha inválido"})
+      }
+      return res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 };
