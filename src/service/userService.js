@@ -5,20 +5,21 @@ const bcrypt = require('bcrypt');
 module.exports = {
     async seeProfile(userId) {
         if (!userId || isNaN(userId)) {
-            throw new Error("ID inválido");
+            throw new Error("ID_INVALIDO");
         }
         const findProfile = await User.findByPk(userId, {
             attributes: ['id', 'name', 'created_at'],
             include: [
                 {
-                    model: Post,
-                    attributes: ['post', 'created_at']
+                   model: Post,
+                   as: 'posts',
+                   attributes: ['post', 'created_at']
                 }
             ]
         });
 
         if (!findProfile) {
-            throw new Error("Perfil não encontrado");
+            throw new Error("PERFIL_NAO_ENCONTRADO");
         }
 
         return findProfile;
@@ -26,11 +27,11 @@ module.exports = {
     
     async updateName(userId, name, password) {
         if (!userId || isNaN(userId)) {
-            throw new Error("ID inválido");
+            throw new Error("ID_INVALIDO");
         }
 
         if (!name || !password) {
-            throw new Error("Credenciais não informadas");
+            throw new Error("CREDENCIAIS_NAO_INFORMADAS");
         }
 
         const user = await User.findByPk(userId, {
@@ -38,12 +39,12 @@ module.exports = {
         });
 
         if (!user) {
-            throw new Error("Usuário não encontrado");
+            throw new Error("USUARIO_NAO_ENCONTRADO");
         }
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-            throw new Error("Senha incorreta");
+            throw new Error("SENHA_INCORRETA");
         }
 
         await User.update({ name }, { where: { id: userId } });
@@ -52,16 +53,17 @@ module.exports = {
             attributes: { exclude: ['password'] }
         });
 
+
         return updatedUser;
     },
     
     async updatePassword(userId, password, newPassword) {
         if (!userId || isNaN(userId)) {
-            throw new Error("ID inválido");
+            throw new Error("ID_INVALIDO");
         }
 
         if (!password || !newPassword) {
-            throw new Error("Credenciais inválidas");
+            throw new Error("CREDENCIAIS_INVALIDAS");
         }
 
         const user = await User.findByPk(userId, {
@@ -69,16 +71,16 @@ module.exports = {
         });
 
         if (!user) {
-            throw new Error("Usuário não encontrado");
+            throw new Error("USUARIO_NAO_ENCONTRADO");
         }
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-            throw new Error("Senha incorreta");
+            throw new Error("SENHA_INCORRETA");
         }
 
         if (password === newPassword) {
-            throw new Error("As senhas não podem ser iguais");
+            throw new Error("AS_SENHAS_NAO_PODEM_SER_IGUAIS");
         }
 
         const hash = await bcrypt.hash(newPassword, 10);
@@ -94,11 +96,11 @@ module.exports = {
 
     async deleteAccount(userId, password){
         if (!userId || isNaN(userId)){
-            throw new Error("ID inválido");
+            throw new Error("ID_INVALIDO");
         }
 
         if (!password){
-            throw new Error("Credencial inválida");
+            throw new Error("CREDENCIAL_INVALIDO");
         }
 
         const user = await User.findByPk(userId, {
@@ -106,12 +108,12 @@ module.exports = {
         });
 
         if (!user){
-            throw new Error("Usuário não encontrado"); 
+            throw new Error("USUARIO_NAO_ENCONTRADO"); 
         }
 
         const math = await bcrypt.compare(password, user.password);
         if (!math){
-            throw new Error("Senha incorreta") 
+            throw new Error("SENHA_INCORRETA") 
         }
 
         const destroyAccount = await User.destroy({ where: { id: userId }});

@@ -12,7 +12,7 @@ module.exports = {
                 data: profile
             });
         } catch (error) {
-            if (error.message === "ID inválido" || error.message === "Perfil não encontrado") {
+            if (error.message === "ID_INVALIDO" || error.message === "PERFIL_NAO_ENCONTRADO") {
                 return res.status(400).json({ message: error.message });
             }
 
@@ -33,13 +33,13 @@ module.exports = {
             });
 
         } catch (error) {
-            if (error.message === "ID inválido" || error.message === "Credenciais não informadas") {
+            if (error.message === "ID_INVALIDO" || error.message === "CREDENCIAIS_NAO_INFORMADAS") {
                 return res.status(400).json({ message: error.message });
             }
-            if (error.message === "Usuário não encontrado") {
+            if (error.message === "USUARIO_NAO_ENCONTRADO") {
                 return res.status(404).json({ message: error.message });
             }
-            if (error.message === "Senha incorreta") {
+            if (error.message === "SENHA_INCORRETA") {
                 return res.status(401).json({ message: error.message });
             }
 
@@ -62,13 +62,13 @@ module.exports = {
 
 
         } catch (error) {
-            if (error.message === "ID inválido" || error.message === "Credenciais inválidas" || error.message === "As senhas não podem ser iguais") {
+            if (error.message === "ID_INVALIDO" || error.message === "CREDENCIAIS_INVALIDAS" || error.message === "AS_SENHAS_NAO_PODEM_SER_IGUAIS") {
                 return res.status(400).json({ message: error.message });
             }
-            if (error.message === "Usuário não encontrado"){
+            if (error.message === "USUARIO_NAO_ENCONTRADO"){
                 return res.status(404).json({ message: "Usuário não encontrado" });
             }
-            if (error.message === "Senha incorreta"){
+            if (error.message === "SENHA_INCORRETA"){
                 return res.status(401).json({ message: "Senha incorreta"});
             }
 
@@ -88,13 +88,13 @@ module.exports = {
                 message: "Usuario deletado com sucesso",
             })
         } catch (error) {
-            if (error.message === "Usuário não encontrado"){
+            if (error.message === "USUARIO_NAO_ENCONTRADO"){
                 return res.status(404).json({ message: error.message });
             }
-            if (error.message === "Senha incorreta"){
+            if (error.message === "SENHA_INCORRETA"){
                 return res.status(401).json({ message: error.message });
             }
-            if (error.message === "ID inválido" || error.message === "Credencial inválida") {
+            if (error.message === "ID_INVALIDO" || error.message === "CREDENCIAL_INVALIDO") {
                 return res.status(400).json({ message: error.message });
             }
             return res.status(500).json({ message: "Erro interno no servidor" })
