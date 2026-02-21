@@ -3,14 +3,8 @@ const { Model, DataTypes } = require('sequelize');
 class PermissionRoles extends Model {
   static init(sequelize) {
     super.init({
-      permission_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      role_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+      permission_id: DataTypes.INTEGER,
+      role_id: DataTypes.INTEGER
     }, {
       sequelize,
       timestamps: true,

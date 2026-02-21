@@ -4,8 +4,8 @@ class Role extends Model {
     static init(sequelize) {
         super.init({
             role: {
-                type: DataTypes.ENUM('admin', 'moderador', 'user'),
-                allowNull: false,
+              type: DataTypes.ENUM('admin', 'moderador', 'user'),
+              defaultValue: 'user',
             },
         }, {
             sequelize,

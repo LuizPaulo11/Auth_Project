@@ -3,11 +3,9 @@ const { Model, DataTypes } = require('sequelize');
 class Permission extends Model {
   static init(sequelize) {
     super.init({
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-      },
+      name: DataTypes.STRING,
+      resource: DataTypes.STRING,
+      action: DataTypes.ENUM('create', 'read', 'update', 'delete'),
     }, {
       sequelize,
       timestamps: true,
