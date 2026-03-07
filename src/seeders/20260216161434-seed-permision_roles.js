@@ -1,6 +1,5 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
 
@@ -14,13 +13,14 @@ module.exports = {
       { type: Sequelize.QueryTypes.SELECT }
     );
 
-    const permissionRoles = [];
 
-    for (const role of roles) {
-      for (const permission of permissions) {
+    let permissionRoles = [];
+
+    for (const permission of permissions) {
+      for (const role of roles) {
         permissionRoles.push({
-          role_id: role.id,
           permission_id: permission.id,
+          role_id: 1,
           created_at: new Date(),
           updated_at: new Date()
         });
