@@ -5,6 +5,10 @@ module.exports = {
         try {
             const userId = req.params.id;
 
+            if (!userId || isNaN(userId)) {
+                return res.status(400).json({ message: "ID inválido" });
+            }
+
             const profile = await userService.seeProfile(userId);
 
             return res.json({
@@ -12,8 +16,8 @@ module.exports = {
                 data: profile
             });
         } catch (error) {
-            if (error.message === "ID_INVALIDO" || error.message === "PERFIL_NAO_ENCONTRADO") {
-                return res.status(400).json({ message: error.message });
+            if (error.message === "PERFIL_NAO_ENCONTRADO") {
+                return res.status(404).json({ message: "Usuario não encontrado" });
             }
 
             return res.status(500).json({ message: "Erro interno no servidor" });
@@ -25,25 +29,29 @@ module.exports = {
             const userId = req.params.id;
             const { name, password } = req.body;
 
-            const updatedName = await userService.updateName(userId, name, password);
+            if (!userId || isNaN(userId)) {
+                return res.status(400).json({ message: "ID inválido" });
+            }
+
+            if(!name || !password) {
+                return res.status(400).json({ message: "Credenciais inválidas" });
+            }
+
+            const updatedUser = await userService.updateName(userId, name, password);
 
             return res.status(200).json({
                 message: 'Nome atualizado com sucesso',
-                user: updatedName
+                user: updatedUser
             });
 
         } catch (error) {
-            if (error.message === "ID_INVALIDO" || error.message === "CREDENCIAIS_NAO_INFORMADAS") {
-                return res.status(400).json({ message: error.message });
-            }
             if (error.message === "USUARIO_NAO_ENCONTRADO") {
-                return res.status(404).json({ message: error.message });
+                return res.status(404).json({ message: "Usuario não encontrado" });
             }
             if (error.message === "SENHA_INCORRETA") {
-                return res.status(401).json({ message: error.message });
+                return res.status(401).json({ message: "Credenciais inválidas" });
             }
 
-            console.error(error);
             return res.status(500).json({ message: "Erro interno no servidor" });
         }
     },
@@ -52,6 +60,14 @@ module.exports = {
         try {
             const userId = req.params.id;
             const { password, newPassword } = req.body;
+
+            if (!userId || isNaN(userId)) {
+                return res.status(400).json({ message: "ID inválido" });
+            }
+
+            if (!password || !newPassword) {
+                return res.status(400).json({ message: "Credenciais inválidas" });
+            }
 
             const updatedPassword = await userService.updatePassword(userId, password, newPassword)
             
@@ -62,16 +78,16 @@ module.exports = {
 
 
         } catch (error) {
-            if (error.message === "ID_INVALIDO" || error.message === "CREDENCIAIS_INVALIDAS" || error.message === "AS_SENHAS_NAO_PODEM_SER_IGUAIS") {
-                return res.status(400).json({ message: error.message });
+            if (error.message === "AS_SENHAS_NAO_PODEM_SER_IGUAIS") {
+                return res.status(400).json({ message: "As senhas não podem ser iguais" });
             }
+
             if (error.message === "USUARIO_NAO_ENCONTRADO"){
                 return res.status(404).json({ message: "Usuário não encontrado" });
             }
             if (error.message === "SENHA_INCORRETA"){
-                return res.status(401).json({ message: "Senha incorreta"});
+                return res.status(401).json({ message: "Credenciais inválidas"});
             }
-
 
             return res.status(500).json({ message: "Erro interno no servidor" });
         }
@@ -82,6 +98,14 @@ module.exports = {
             const userId = req.params.id;
             const { password } = req.body;
 
+            if (!userId || isNaN(userId)) {
+                return res.status(400).json({ message: "ID inválido" });
+            }
+
+            if (!password) {
+                return res.status(400).json({ message: "Credenciais inválidas" });
+            }
+
             await userService.deleteAccount(userId, password);
 
             return res.status(200).json({
@@ -89,14 +113,12 @@ module.exports = {
             })
         } catch (error) {
             if (error.message === "USUARIO_NAO_ENCONTRADO"){
-                return res.status(404).json({ message: error.message });
+                return res.status(404).json({ message: "Usuario não encontrado" });
             }
             if (error.message === "SENHA_INCORRETA"){
-                return res.status(401).json({ message: error.message });
+                return res.status(401).json({ message: "Crendenciais inválidas" });
             }
-            if (error.message === "ID_INVALIDO" || error.message === "CREDENCIAL_INVALIDO") {
-                return res.status(400).json({ message: error.message });
-            }
+            
             return res.status(500).json({ message: "Erro interno no servidor" })
         }
     }

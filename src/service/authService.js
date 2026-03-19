@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports = {
   async register(name, password) {
-    if (!name || !password) {
-      throw new Error("CREDENCIAIS_INVALIDAS");
-    }
 
     const existingUser = await User.findOne({ where: { name }});
 
@@ -29,6 +26,7 @@ module.exports = {
       delete userSafe.password;
 
       return { newUser: userSafe };
+      
     } catch (err) {
       await transaction.rollback();
       throw err;
@@ -36,9 +34,6 @@ module.exports = {
   },
 
   async login(name, password) {
-    if (!name || !password) {
-      throw new Error("CREDENCIAIS_INVALIDAS");
-    }
 
     const user = await User.findOne({ where: { name } });
 

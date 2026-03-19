@@ -2,6 +2,7 @@ const express = require('express');
 
 const userController = require('./controller/userController');
 const authController = require('./controller/authController');
+const postController = require('./controller/postController');
 
 const authMiddleware = require('./middlewares/authMiddleware');
 const { validateUser } = require('./middlewares/validationsMiddleware');
@@ -15,14 +16,14 @@ routes.post('/auth/login', validateUser, authController.login);
 // userController
 routes.get('/users/:id', userController.seeProfile); // sera atualizada para conseguir somente visualizar proprio perfil
 routes.put('/users/:id/name', authMiddleware, userController.updateName);
-routes.put('/users/:id/password', validateUser, authMiddleware, userController.updatePassword);
+routes.put('/users/:id/password', authMiddleware, userController.updatePassword);
 routes.delete('/users/:id', authMiddleware, userController.deleteAccount);
 
 // Posts
-
-
-
-
+routes.get('/posts/feed', authMiddleware, postController.getFeed);
+routes.get('/posts/my-posts/:id', authMiddleware, postController.getMyPosts);
+routes.get('/posts/:id', authMiddleware, postController.getPostByID);
+routes.post('/posts/:user_id', authMiddleware, postController.createPost);
 
 
 
@@ -30,10 +31,7 @@ routes.delete('/users/:id', authMiddleware, userController.deleteAccount);
 
 
 /*
-routes.get('/posts/feed', );
-routes.get('/posts/my-posts', );
-routes.get('posts/:id', );
-routes.post('/posts', );
+
 routes.put('/posts/:id', );
 routes.delete('/posts/:id', );
 */
